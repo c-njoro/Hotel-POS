@@ -1,0 +1,17 @@
+{
+  "name": "hotel-pos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-backend": "nodemon backend/index.js",
+    "start-frontend": "npm run dev --prefix userend",
+    "start-app": "concurrently \"npm run start-backend\" \"sleep 5 && npm run start-frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
