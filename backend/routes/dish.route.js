@@ -8,6 +8,7 @@ const {
   updateDish,
   deleteDish,
   getOne,
+  fetchBulk,
 } = require("../controllers/dish.controller");
 
 //getting all
@@ -24,5 +25,8 @@ router.put("/update/:id", updateDish);
 
 //delete a dish
 router.delete("/delete/:id", deleteDish);
+
+//getting bulk
+router.post("/fetchBulk", fetchBulk);
 
 module.exports = router;

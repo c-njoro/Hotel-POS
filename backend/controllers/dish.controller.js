@@ -95,10 +95,48 @@ const deleteDish = async (req, res) => {
   }
 };
 
+const fetchBulk = async (req, res) => {
+  const { ids } = req.body;
+
+  try {
+    if (!Array.isArray(ids)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid request: ids should be an array" });
+    }
+
+    // Count occurrences of each ID
+    const idCounts = ids.reduce((acc, id) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Fetch unique dishes by ID
+    const uniqueIds = Object.keys(idCounts);
+    const dishes = await Dish.find({ _id: { $in: uniqueIds } });
+
+    // Create a map of dish ID to dish object
+    const dishesMap = dishes.reduce((acc, dish) => {
+      acc[dish._id.toString()] = dish;
+      return acc;
+    }, {});
+
+    // Build the result array including duplicates
+    const result = ids
+      .map((id) => dishesMap[id.toString()])
+      .filter((dish) => dish !== undefined);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllDishes,
   createDish,
   updateDish,
   deleteDish,
   getOne,
+  fetchBulk,
 };

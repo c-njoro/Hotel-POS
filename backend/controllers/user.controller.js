@@ -1,5 +1,5 @@
 const User = require("../models/user.model");
-
+const bcrypt = require("bcrypt");
 //create user
 const createUser = async (req, res) => {
   try {
@@ -16,8 +16,13 @@ const createUser = async (req, res) => {
     ) {
       return res.status(400).json({ message: "Crucial user Info missing" });
     }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    const newUser = await User.create({ ...req.body, profilePicture: "" });
+    const newUser = await User.create({
+      ...req.body,
+      profilePicture: "",
+      password: hashedPassword,
+    });
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ message: error.message });

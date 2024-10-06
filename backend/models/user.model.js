@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["waiter", "kitchen", "manager"],
+    enum: ["waiter", "kitchen", "manager", "cashier"],
     default: "waiter",
   },
   dateCreated: {
