@@ -1,0 +1,33 @@
+.main-header-container {
+  @apply w-screen h-[calc(12vh)] flex flex-row justify-between items-center;
+  background-color: #84b4dc;
+
+  .logo {
+    @apply w-1/3 h-[calc(12vh)];
+
+    .image {
+      @apply w-full h-full object-contain;
+      filter: brightness(10);
+    }
+  }
+
+  .icons {
+    @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
+
+    .icon-itself {
+      @apply size-12 text-gray-600;
+    }
+  }
+
+  .user {
+    @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
+
+    .name {
+      @apply text-white font-bold md:text-3xl text-2xl tracking-wide uppercase;
+    }
+
+    .login-link {
+      @apply bg-white text-gray-500 shadow-md px-4 py-2 font-semibold uppercase;
+    }
+  }
+}
