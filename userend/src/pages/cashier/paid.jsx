@@ -4,11 +4,10 @@ import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AiFillPrinter } from "react-icons/ai";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
-const index = () => {
+const paid = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -28,14 +27,14 @@ const index = () => {
     refetch: refetchOrders,
   } = useOrders();
 
-  const [filteredUnPaidOrders, setFilteredUnPaidOrders] = useState([]);
-  const [unPaidOrders, setUnPaidOrders] = useState([]);
+  const [filteredPaidOrders, setFilteredPaidOrders] = useState([]);
+  const [paidOrders, setPaidOrders] = useState([]);
 
   //set orders with respective to their payment status
   const setOrders = () => {
     if (user && orders) {
-      const unpaid = orders.filter((order) => order.paymentStatus == "pending");
-      setUnPaidOrders(unpaid);
+      const paid = orders.filter((order) => order.paymentStatus == "paid");
+      setPaidOrders(paid);
     }
   };
 
@@ -44,19 +43,19 @@ const index = () => {
   }, [orders, user]);
 
   useEffect(() => {
-    setFilteredUnPaidOrders(unPaidOrders);
-  }, [unPaidOrders]);
+    setFilteredPaidOrders(paidOrders);
+  }, [paidOrders]);
 
   //on table search
   const tableSearch = (e) => {
     e.preventDefault();
     const searchTerm = e.target.value;
     if (!searchTerm) {
-      setFilteredUnPaidOrders(unPaidOrders);
+      setFilteredPaidOrders(paidOrders);
       return;
     }
 
-    const searches = unPaidOrders.filter((order) =>
+    const searches = paidOrders.filter((order) =>
       order.table.includes(searchTerm)
     );
 
@@ -74,7 +73,7 @@ const index = () => {
       return;
     }
 
-    setFilteredUnPaidOrders(searches);
+    setFilteredPaidOrders(searches);
   };
 
   //mark orders as paid or unpaid
@@ -126,10 +125,10 @@ const index = () => {
       {orders ? (
         <div className="all-orders">
           <div className="sub-heading">
-            <h1>Unpaid Orders</h1>
-            <Link href="/cashier/paid" className="link">
-              <p>Paid Orders</p>
-              <FaArrowRight />
+            <h1>Paid Orders</h1>
+            <Link href="/cashier" className="link">
+              <FaArrowLeftLong />
+              <p>UnPaid Orders</p>
             </Link>
           </div>
 
@@ -144,8 +143,8 @@ const index = () => {
             />
           </div>
           <div className="order-holder">
-            {filteredUnPaidOrders.length > 0 ? (
-              filteredUnPaidOrders.map((order, index) => (
+            {filteredPaidOrders.length > 0 ? (
+              filteredPaidOrders.map((order, index) => (
                 <div className="an-order" key={index}>
                   <div className="top">
                     <h1>Table : {order.table}</h1>
@@ -171,29 +170,18 @@ const index = () => {
                   <div className="totals">
                     <button
                       onClick={() => {
-                        const isConfirmed = window.confirm(
-                          `Confirm table ${order.table} has completed payment of Ksh.${order.totalAmount}`
-                        );
-
-                        if (!isConfirmed) {
-                          return;
-                        }
-                        markOrderAsPaid(order._id);
+                        markOrderAsUnPaid(order._id);
                       }}
                     >
-                      Mark Order As Paid
+                      Revert To Unpaid
                     </button>
                     <p>Total : {order.totalAmount}</p>
-                    <button>
-                      {" "}
-                      <AiFillPrinter /> Print Bill
-                    </button>
                   </div>
                 </div>
               ))
             ) : (
               <div className="not-present">
-                <h1>Seems there are no served unpaid orders.</h1>
+                <h1>Seems there are no served and paid orders.</h1>
               </div>
             )}
           </div>
@@ -215,4 +203,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default paid;

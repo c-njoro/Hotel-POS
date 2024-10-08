@@ -1,4 +1,5 @@
 import Structure from "@/components/Structure";
+import "@/styles/cashier.css";
 import "@/styles/globals.css";
 import "@/styles/header.css";
 import "@/styles/kitchen.css";
