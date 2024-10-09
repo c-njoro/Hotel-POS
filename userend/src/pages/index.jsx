@@ -4,7 +4,7 @@ import useSessionHook from "@/components/hooks/sessionHook";
 import Link from "next/link";
 import useUser from "../components/hooks/userHook";
 
-const index = () => {
+const Home = () => {
   const {
     data: dishes,
     isLoading: dishesLoading,
@@ -105,8 +105,8 @@ const index = () => {
         )}
         <div className="motivation">
           <h1>
-            "Every interaction with a customer is a chance to make someone's day
-            a little better. Keep up the great work!"
+            Every interaction with a customer is a chance to make someone's day
+            a little better. Keep up the great work!
           </h1>
         </div>
       </div>
@@ -114,4 +114,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Home;
