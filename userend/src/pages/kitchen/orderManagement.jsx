@@ -2,10 +2,10 @@ import useOrders from "@/components/hooks/orderHook";
 import useSessionHook from "@/components/hooks/sessionHook";
 import useUser from "@/components/hooks/userHook";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const Kitchen = () => {
+const KitchenOrders = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -30,23 +30,29 @@ const Kitchen = () => {
 
   useEffect(() => {
     refetchOrders();
-  }, []);
+  }, [refetchOrders]);
 
   //setting orders
-  const setOrders = () => {
-    if ((orders, user)) {
+  const setOrders = useCallback(() => {
+    if (orders && user) {
       const unprepared = orders.filter(
         (order) => order.orderStatus == "preparing"
       );
-      setUnReadyOrders(unprepared);
       const prepared = orders.filter((order) => order.orderStatus == "ready");
-      setReadyOrders(prepared);
+
+      if (JSON.stringify(unReadyOrders) !== JSON.stringify(unprepared)) {
+        setUnReadyOrders(unprepared);
+      }
+
+      if (JSON.stringify(readyOrders) !== JSON.stringify(prepared)) {
+        setUnReadyOrders(prepared);
+      }
     }
-  };
+  }, [orders, user, readyOrders, unReadyOrders]);
 
   useEffect(() => {
     setOrders();
-  }, [orders, user]);
+  }, [setOrders]);
 
   //marking order as ready or reversing to unready
   const markOrderAsReady = async (id) => {
@@ -215,4 +221,4 @@ const Kitchen = () => {
   );
 };
 
-export default Kitchen;
+export default KitchenOrders;

@@ -2,9 +2,9 @@ import useOrders from "@/components/hooks/orderHook";
 import useSessionHook from "@/components/hooks/sessionHook";
 import useUser from "@/components/hooks/userHook";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const editOrder = () => {
+const EditOrder = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -29,40 +29,49 @@ const editOrder = () => {
   const [servedOrders, setServedOrders] = useState([]);
 
   //putting orders in place
-  const setOrders = () => {
+  const setOrders = useCallback(() => {
     if (orders && user) {
       const ordersByMyName = orders.filter(
         (order) => order.waiter.waiterId === user._id
       );
       setMyOrders(ordersByMyName);
     }
-  };
+  }, [orders, user]);
 
-  const separateOrders = () => {
+  useEffect(() => {
+    setOrders();
+  }, [setOrders]);
+
+  //separating orders in terms of their status
+  const separateOrders = useCallback(() => {
     const ready = myOrders.filter((order) => order.orderStatus === "ready");
     const served = myOrders.filter((order) => order.orderStatus === "served");
     const preparing = myOrders.filter(
       (order) => order.orderStatus === "preparing"
     );
-    setReadyOrders(ready);
-    setPreparingOrders(preparing);
-    setServedOrders(served);
-  };
 
-  //use effects
-  useEffect(() => {
-    refetchOrders();
-  }, []);
-
-  useEffect(() => {
-    setOrders();
-  }, [orders, user]);
+    // Only update if the orders are different
+    if (JSON.stringify(ready) !== JSON.stringify(readyOrders)) {
+      setReadyOrders(ready);
+    }
+    if (JSON.stringify(served) !== JSON.stringify(servedOrders)) {
+      setServedOrders(served);
+    }
+    if (JSON.stringify(preparing) !== JSON.stringify(preparingOrders)) {
+      setPreparingOrders(preparing);
+    }
+  }, [myOrders, readyOrders, servedOrders, preparingOrders]);
 
   useEffect(() => {
     if (myOrders.length > 0) {
       separateOrders();
     }
-  }, [myOrders]);
+  }, [myOrders, separateOrders]);
+
+  //refetch orders at render of the page
+  useEffect(() => {
+    refetchOrders();
+  }, [refetchOrders]);
 
   //marking ready orders as served
   const setOrderToServed = async (id) => {
@@ -168,4 +177,4 @@ const editOrder = () => {
   );
 };
 
-export default editOrder;
+export default EditOrder;

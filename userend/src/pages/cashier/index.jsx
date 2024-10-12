@@ -3,12 +3,12 @@ import useSessionHook from "@/components/hooks/sessionHook";
 import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AiFillPrinter } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
-const index = () => {
+const Cashier = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -32,16 +32,22 @@ const index = () => {
   const [unPaidOrders, setUnPaidOrders] = useState([]);
 
   //set orders with respective to their payment status
-  const setOrders = () => {
+  const setOrders = useCallback(() => {
     if (user && orders) {
-      const unpaid = orders.filter((order) => order.paymentStatus == "pending");
-      setUnPaidOrders(unpaid);
+      const unpaid = orders.filter(
+        (order) =>
+          order.paymentStatus == "pending" && order.orderStatus == "served"
+      );
+
+      if (JSON.stringify(unPaidOrders) !== JSON.stringify(unpaid)) {
+        setUnPaidOrders(unpaid);
+      }
     }
-  };
+  }, [orders, user, unPaidOrders]);
 
   useEffect(() => {
     setOrders();
-  }, [orders, user]);
+  }, [setOrders]);
 
   useEffect(() => {
     setFilteredUnPaidOrders(unPaidOrders);
@@ -90,31 +96,6 @@ const index = () => {
       refetchOrders();
     } catch (error) {
       console.log("Could not mark as paid due to : ", error);
-    }
-  };
-
-  const markOrderAsUnPaid = async (id) => {
-    const managerPassword = process.env.NEXT_PUBLIC_MANAGER_AUTH;
-    const userPassword = window.prompt(
-      "Manager Enter Password To Revert To Unpaid: "
-    );
-
-    if (managerPassword !== userPassword) {
-      alert("Wrong Password");
-      return;
-    }
-
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_ORDERS_URL}/update/${id}`,
-        {
-          paymentStatus: "pending",
-        }
-      );
-
-      refetchOrders();
-    } catch (error) {
-      console.log("Could not mark as unpaid due to : ", error);
     }
   };
 
@@ -215,4 +196,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Cashier;

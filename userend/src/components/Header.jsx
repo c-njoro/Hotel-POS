@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import useSessionHook from "./hooks/sessionHook";
 import useUser from "./hooks/userHook";
@@ -18,12 +19,14 @@ const Header = () => {
   return (
     <div className="main-header-container">
       <div className="logo">
-        <img
+        <Image
           src="/images/SAVEDLOGO.png"
           alt="hotel logo"
           className="image"
           loading="lazy"
-        />
+          width={700}
+          height={700}
+        ></Image>
       </div>
       {/* <div className="icons">
         <div className="icon">

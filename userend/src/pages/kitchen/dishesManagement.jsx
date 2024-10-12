@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
 
-const Kitchen = () => {
+const KitchenDishes = () => {
   const {
     data: dishes,
     isLoading: dishesLoading,
@@ -164,4 +164,4 @@ const Kitchen = () => {
   );
 };
 
-export default Kitchen;
+export default KitchenDishes;

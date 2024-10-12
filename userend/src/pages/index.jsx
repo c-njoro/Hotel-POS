@@ -101,13 +101,12 @@ const Home = () => {
         ) : error ? (
           <div>User Error</div>
         ) : (
-          <div>You are not logged in</div>
+          <div className="uppercase font-bold text-red-700 tracking-wider ">
+            You are not logged in
+          </div>
         )}
         <div className="motivation">
-          <h1>
-            Every interaction with a customer is a chance to make someone's day
-            a little better. Keep up the great work!
-          </h1>
+          <h1>A way to be happy is to make someone else happy</h1>
         </div>
       </div>
     </div>

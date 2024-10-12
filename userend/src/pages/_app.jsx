@@ -11,7 +11,9 @@ const queryClient = new QueryClient();
 export default function App({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <Structure children={<Component {...pageProps} />} />
+      <Structure>
+        <Component {...pageProps} />
+      </Structure>
     </QueryClientProvider>
   );
 }

@@ -5,7 +5,7 @@ import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -172,24 +172,27 @@ const Order = () => {
   };
 
   //a function to fetch bulk dishes from the ones selected by the user
-  const fetchThem = async () => {
-    const url = `${process.env.NEXT_PUBLIC_DISHES_URL}/fetchBulk`;
-
-    const response = await axios.post(url, {
-      ids: dishesList,
-    });
-
-    const allDishesFetched = await response.data;
-    setDishesFetched(allDishesFetched);
-  };
-
-  useEffect(() => {
+  const fetchThem = useCallback(async () => {
     if (dishesList.length > 0) {
-      fetchThem();
+      const url = `${process.env.NEXT_PUBLIC_DISHES_URL}/fetchBulk`;
+
+      const response = await axios.post(url, {
+        ids: dishesList,
+      });
+
+      const allDishesFetched = await response.data;
+
+      if (JSON.stringify(allDishesFetched) !== JSON.stringify(dishesFetched)) {
+        setDishesFetched(allDishesFetched);
+      }
     } else {
       setDishesFetched([]);
     }
-  }, [dishesList]);
+  }, [dishesList, dishesFetched]);
+
+  useEffect(() => {
+    fetchThem();
+  }, [fetchThem]);
 
   //this is for counting occurences of a dish in the fetched dishes, i then returns an object which has dishes ids as their names and
   //their data in them and also add an attribute count which indicates how many times it has appeared
@@ -266,7 +269,7 @@ const Order = () => {
 
   const reduceDishInOrder = (id) => {
     const count = dishesList.filter((iD) => iD === id).length;
-    if (count >= 1) {
+    if (count <= 1) {
       toast.warn("Only one remaining!!", {
         position: "top-right",
         autoClose: 2000,

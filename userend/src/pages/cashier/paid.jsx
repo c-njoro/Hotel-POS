@@ -3,11 +3,11 @@ import useSessionHook from "@/components/hooks/sessionHook";
 import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
-const paid = () => {
+const CashierPaid = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -31,17 +31,21 @@ const paid = () => {
   const [paidOrders, setPaidOrders] = useState([]);
 
   //set orders with respective to their payment status
-  const setOrders = () => {
+  const setOrders = useCallback(() => {
     if (user && orders) {
       const paid = orders.filter((order) => order.paymentStatus == "paid");
-      setPaidOrders(paid);
+
+      if (JSON.stringify(paidOrders) !== JSON.stringify(paid)) {
+        setPaidOrders(paid);
+      }
     }
-  };
+  }, [orders, user, paidOrders]);
 
   useEffect(() => {
     setOrders();
-  }, [orders, user]);
+  }, [setOrders]);
 
+  //transfer paid orders to filtered so they are searchable
   useEffect(() => {
     setFilteredPaidOrders(paidOrders);
   }, [paidOrders]);
@@ -77,21 +81,6 @@ const paid = () => {
   };
 
   //mark orders as paid or unpaid
-  const markOrderAsPaid = async (id) => {
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_ORDERS_URL}/update/${id}`,
-        {
-          paymentStatus: "paid",
-        }
-      );
-
-      refetchOrders();
-    } catch (error) {
-      console.log("Could not mark as paid due to : ", error);
-    }
-  };
-
   const markOrderAsUnPaid = async (id) => {
     const managerPassword = process.env.NEXT_PUBLIC_MANAGER_AUTH;
     const userPassword = window.prompt(
@@ -203,4 +192,4 @@ const paid = () => {
   );
 };
 
-export default paid;
+export default CashierPaid;
