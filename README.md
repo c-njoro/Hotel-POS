@@ -3,13 +3,18 @@ before you run the program,
 # Add .env to backend and add the following:
 
 PORT=5000(the port you want the database to run on)
+
 LOCAL_KEY=your mongodb local URI
+
 (you can also use the live one if you have a live mongo db account)
 
 
 # Add .env.local to frontend and add the following:
+
 Authentications
+
 NEXTAUTH_URL=http://localhost:3000(the port the frontend is running on)
+
 NEXTAUTH_SECRET=(generate a random key)
 
 NEXT_PUBLIC_BASE_URL=http://localhost:5000(the endpoint where the backend is running)
