@@ -28,8 +28,12 @@ NEXT_PUBLIC_BASE_URL_FOR_ADMIN=${NEXT_PUBLIC_BASE_URL}/api
 
 
 //manager authorization password
+
+
 NEXT_PUBLIC_MANAGER_AUTH=(anything of your liking, it will be used whenever manager needs to enter password on the app)
 
 
 After adding the details indicated above, you will now run using the concurrently script that first runs the backend then frontend, it is in the package.json of the whole app
+
+
 # npm run start-app
