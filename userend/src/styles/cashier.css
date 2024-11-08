@@ -79,3 +79,65 @@
     }
   }
 }
+
+.main-bill-container {
+  @apply w-full min-h-screen h-max bg-blue-200 flex flex-col justify-start items-center py-5 gap-8;
+
+  .the-bill {
+    @apply bg-white w-max h-max flex flex-col justify-start items-center p-8 gap-8 shadow-lg rounded-md;
+
+    .hotel {
+      @apply w-full h-max flex flex-row justify-center items-center;
+
+      h1 {
+        @apply uppercase text-2xl tracking-wider font-semibold;
+      }
+    }
+
+    .dishes-holder {
+      @apply w-full flex flex-col justify-center items-center gap-3;
+
+      .one-dish {
+        @apply w-full h-max grid place-items-start grid-cols-3 gap-5;
+      }
+
+      .one-dish:first-of-type {
+        p {
+          @apply font-semibold;
+        }
+      }
+    }
+
+    .bill-total {
+      @apply w-full h-max grid grid-cols-2 place-items-center;
+
+      p {
+        @apply text-xl font-bold;
+      }
+    }
+
+    .more-details {
+      @apply w-full h-max flex flex-col justify-center items-center;
+
+      p {
+        @apply capitalize tracking-wide;
+      }
+    }
+
+    .welcome-again {
+      @apply w-full h-max flex flex-col justify-center items-center;
+
+      p {
+        @apply capitalize tracking-wide;
+      }
+    }
+  }
+
+  .btn {
+    @apply w-max h-max;
+
+    button {
+      @apply bg-green-100 py-1 w-max px-5 rounded-full text-gray-600  text-sm tracking-wide uppercase hover:translate-x-2 flex flex-row gap-2 justify-center items-center;
+    }
+  }
+}

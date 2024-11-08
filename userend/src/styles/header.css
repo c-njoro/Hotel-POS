@@ -15,7 +15,7 @@
     @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
 
     .icon-itself {
-      @apply size-12 text-gray-600;
+      @apply size-8 text-gray-500 bg-blue-50 rounded-full p-2;
     }
   }
 
@@ -23,7 +23,7 @@
     @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
 
     .name {
-      @apply text-white font-bold md:text-3xl text-2xl tracking-wide uppercase;
+      @apply text-white font-bold md:text-2xl text-xl tracking-wide uppercase;
     }
 
     .login-link {

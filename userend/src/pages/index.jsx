@@ -44,6 +44,10 @@ const Home = () => {
                   Update my orders
                 </Link>
 
+                <Link href="/changePassword" className="the-link">
+                  Change Password
+                </Link>
+
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
                   className="the-link"
@@ -59,6 +63,9 @@ const Home = () => {
                 <Link href="/kitchen/dishesManagement" className="the-link">
                   Manage Dishes
                 </Link>
+                <Link href="/changePassword" className="the-link">
+                  Change Password
+                </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
                   className="the-link"
@@ -71,6 +78,9 @@ const Home = () => {
                 <Link href="/manager" className="the-link">
                   Go to my manager page
                 </Link>
+                <Link href="/changePassword" className="the-link">
+                  Change Password
+                </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
                   className="the-link"
@@ -82,6 +92,9 @@ const Home = () => {
               <div className="link-holder">
                 <Link href="/cashier" className="the-link">
                   Go to cashiers page
+                </Link>
+                <Link href="/changePassword" className="the-link">
+                  Change Password
                 </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"

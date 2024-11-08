@@ -109,7 +109,7 @@ const Cashier = () => {
           <div className="sub-heading">
             <h1>Unpaid Orders</h1>
             <Link href="/cashier/paid" className="link">
-              <p>Paid Orders</p>
+              <p>Go To Paid Orders</p>
               <FaArrowRight />
             </Link>
           </div>
@@ -166,8 +166,12 @@ const Cashier = () => {
                     </button>
                     <p>Total : {order.totalAmount}</p>
                     <button>
-                      {" "}
-                      <AiFillPrinter /> Print Bill
+                      <Link
+                        href={`/cashier/${order._id}`}
+                        className="flex flex-row gap-5"
+                      >
+                        <AiFillPrinter /> Print Bill
+                      </Link>
                     </button>
                   </div>
                 </div>

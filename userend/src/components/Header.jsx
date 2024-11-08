@@ -23,12 +23,12 @@ const Header = () => {
           src="/images/SAVEDLOGO.png"
           alt="hotel logo"
           className="image"
-          loading="lazy"
+          priority
           width={700}
           height={700}
         ></Image>
       </div>
-      {/* <div className="icons">
+      <div className="icons">
         <div className="icon">
           <Link href="/">
             <svg
@@ -37,7 +37,7 @@ const Header = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="icon-itself"
+              className="icon-itself "
             >
               <path
                 strokeLinecap="round"
@@ -47,7 +47,7 @@ const Header = () => {
             </svg>
           </Link>
         </div>
-      </div> */}
+      </div>
       <div className="user">
         {user ? (
           <div className="info">

@@ -9,6 +9,7 @@ const {
   getAllUsers,
   getOne,
   findViaEmail,
+  changePassword,
 } = require("../controllers/user.controller");
 
 //create user
@@ -28,5 +29,8 @@ router.get("/findOne/:id", getOne);
 
 //finding a user
 router.get("/find", findViaEmail);
+
+//updating user password
+router.put("/changePassword", changePassword);
 
 module.exports = router;

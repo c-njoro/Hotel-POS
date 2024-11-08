@@ -118,6 +118,31 @@ const findViaEmail = async (req, res) => {
   }
 };
 
+//user to change password using this
+const changePassword = async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const match = await bcrypt.compare(oldPassword, user.password);
+    if (!match) {
+      return res.status(409).json({ message: "Wrong Old Password" });
+    }
+
+    const newHashed = await bcrypt.hash(newPassword, 10);
+
+    user.password = newHashed;
+    await user.save();
+
+    res.status(200).json({ message: "User password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createUser,
   deleteUser,
@@ -125,4 +150,5 @@ module.exports = {
   getAllUsers,
   getOne,
   findViaEmail,
+  changePassword,
 };
