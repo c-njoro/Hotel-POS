@@ -18,7 +18,7 @@ const ChangePassword = () => {
     refetch: refetchUser,
   } = useUser(sessionData?.email);
 
-  const [oldType, setOldType] = useState("text");
+  const [oldType, setOldType] = useState("password");
   const [newType, setNewType] = useState("password");
   const [inputForm, setInputForm] = useState({
     oldPassword: "",
@@ -127,7 +127,7 @@ const ChangePassword = () => {
         <h1>Change Password</h1>
       </div>
       <div className="form-container">
-        <form onSubmit={sendChangeRequest}>
+        <form className="main-form" onSubmit={sendChangeRequest}>
           <div className="one-input">
             <input
               type={oldType}
@@ -144,7 +144,7 @@ const ChangePassword = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
+              className="icon"
               onClick={toggleOld}
             >
               <path
@@ -175,7 +175,7 @@ const ChangePassword = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
+              className="icon"
               onClick={toggleNew}
             >
               <path
@@ -191,7 +191,7 @@ const ChangePassword = () => {
             </svg>
           </div>
 
-          <input type="submit" value="Change Password" />
+          <input type="submit" value="Change Password" className="submit" />
         </form>
       </div>
     </div>
