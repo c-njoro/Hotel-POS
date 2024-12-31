@@ -45,7 +45,7 @@ const KitchenOrders = () => {
       }
 
       if (JSON.stringify(readyOrders) !== JSON.stringify(prepared)) {
-        setUnReadyOrders(prepared);
+        setReadyOrders(prepared);
       }
     }
   }, [orders, user, readyOrders, unReadyOrders]);

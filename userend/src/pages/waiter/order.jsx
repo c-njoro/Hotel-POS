@@ -44,6 +44,7 @@ const Order = () => {
 
   const [orderClass, setOrderClass] = useState("show");
   const [dishClass, setDishClass] = useState("hide");
+  let unSavedProgress = dishesList.length > 0;
 
   //i will use the following while submiting my order
   const [table, setTable] = useState("");
@@ -188,7 +189,7 @@ const Order = () => {
     } else {
       setDishesFetched([]);
     }
-  }, [dishesList, dishesFetched]);
+  }, [dishesList]);
 
   useEffect(() => {
     fetchThem();
@@ -316,19 +317,21 @@ const Order = () => {
 
   //this is meant to prevent the user from leaving the page without saving the progress
   useEffect(() => {
-    const handleRouteChange = (url) => {
-      if (!window.confirm(message)) {
+    const handleRouteChangeStart = (url) => {
+      const confirmLeave = window.confirm(message);
+      if (!confirmLeave) {
+        // Prevent navigation by emitting an error
         router.events.emit("routeChangeError");
-        throw "Route change cancelled";
+        throw new Error("Route change cancelled");
       }
     };
 
-    router.events.on("routeChangeStart", handleRouteChange);
+    router.events.on("routeChangeStart", handleRouteChangeStart);
 
     return () => {
-      router.events.off("routeChangeStart", handleRouteChange);
+      router.events.off("routeChangeStart", handleRouteChangeStart);
     };
-  }, [router]);
+  }, [router.events]);
 
   //here is the code for searching through dishes to finding the one the user wants
   //on change of the input
