@@ -1,33 +1,7 @@
-.main-header-container {
-  @apply w-screen h-[calc(12vh)] flex flex-row justify-between items-center;
-  background-color: #84b4dc;
+.link-holder {
+  @apply w-full h-full flex flex-col justify-center items-end  gap-8;
 
-  .logo {
-    @apply w-1/3 h-[calc(12vh)];
-
-    .image {
-      @apply w-full h-full object-contain;
-      filter: brightness(10);
-    }
-  }
-
-  .icons {
-    @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
-
-    .icon-itself {
-      @apply size-8 text-gray-500 bg-blue-50 rounded-full p-2;
-    }
-  }
-
-  .user {
-    @apply w-1/3 h-[calc(12vh)] flex flex-col justify-center items-center;
-
-    .name {
-      @apply text-white font-bold md:text-2xl text-xl tracking-wide uppercase;
-    }
-
-    .login-link {
-      @apply bg-white text-gray-500 shadow-md px-4 py-2 font-semibold uppercase;
-    }
+  .the-link {
+    @apply uppercase font-semibold text-sm hover:bg-blue-200 w-full py-1 px-2 rounded-lg shadow-md;
   }
 }

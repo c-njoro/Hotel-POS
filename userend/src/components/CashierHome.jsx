@@ -1,14 +1,14 @@
-import useOrders from "@/components/hooks/orderHook";
-import useSessionHook from "@/components/hooks/sessionHook";
-import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AiFillPrinter } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import useOrders from "./hooks/orderHook";
+import useSessionHook from "./hooks/sessionHook";
+import useUser from "./hooks/userHook";
 
-const Cashier = () => {
+const CashierHome = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -200,4 +200,4 @@ const Cashier = () => {
   );
 };
 
-export default Cashier;
+export default CashierHome;

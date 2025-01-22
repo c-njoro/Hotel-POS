@@ -1,10 +1,10 @@
-import useOrders from "@/components/hooks/orderHook";
-import useSessionHook from "@/components/hooks/sessionHook";
-import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import useOrders from "./hooks/orderHook";
+import useSessionHook from "./hooks/sessionHook";
+import useUser from "./hooks/userHook";
 
-const EditOrder = () => {
+const WaiterHome = () => {
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -177,4 +177,4 @@ const EditOrder = () => {
   );
 };
 
-export default EditOrder;
+export default WaiterHome;

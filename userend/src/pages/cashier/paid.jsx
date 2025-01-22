@@ -115,7 +115,7 @@ const CashierPaid = () => {
         <div className="all-orders">
           <div className="sub-heading">
             <h1>Paid Orders</h1>
-            <Link href="/cashier" className="link">
+            <Link href="/" className="link">
               <FaArrowLeftLong />
               <p>Go To Unpaid Orders</p>
             </Link>
