@@ -14,7 +14,11 @@ const createOrder = async (req, res) => {
 const updateOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedOrder = await Order.findByIdAndUpdate(id, req.body);
+    const allUpdates = {
+      ...req.body,
+      lastUpdated: Date.now(),
+    };
+    const updatedOrder = await Order.findByIdAndUpdate(id, allUpdates);
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found !!!!" });
     }

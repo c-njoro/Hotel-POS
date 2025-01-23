@@ -10,6 +10,10 @@ import DishShow from "./DishShow";
 import OrderEdit from "./OrderEdit";
 import OrderList from "./OrderList";
 import OrderShow from "./OrderShow";
+import StockCreate from "./StockCreate";
+import StockEdit from "./StockEdit";
+import StockList from "./StockList";
+import StockShow from "./StockShow";
 import UserCreate from "./UserCreate";
 import UserEdit from "./UserEdit";
 import UserShow from "./UserShow";
@@ -39,6 +43,14 @@ const ManagerPanel = () => {
         list={OrderList}
         edit={OrderEdit}
         show={OrderShow}
+      />
+
+      <Resource
+        name="stock"
+        list={StockList}
+        edit={StockEdit}
+        show={StockShow}
+        create={StockCreate}
       />
     </Admin>
   );

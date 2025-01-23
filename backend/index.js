@@ -10,6 +10,7 @@ const dishRouter = require("./routes/dish.route");
 const orderRouter = require("./routes/order.route");
 const userRouter = require("./routes/user.route");
 const messageRouter = require("./routes/message.route");
+const stockRouter = require("./routes/stock.route");
 
 //these are for setting up server for real time message sharing
 const { createServer } = require("http");
@@ -41,6 +42,7 @@ app.use("/api/dishes", dishRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/stock", stockRouter);
 
 // //function handling socket io AN MESSAGING IN ALL
 // io.on("connection", (socket) => {

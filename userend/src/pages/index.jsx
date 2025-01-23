@@ -50,11 +50,17 @@ const Home = () => {
           )}
         </div>
       ) : isLoading ? (
-        <div>User Loading...</div>
+        <div className="w-screen h-[calc(90vh)] flex flex-col justify-center items-center text-4xl font-body">
+          User Loading...
+        </div>
       ) : error ? (
-        <div>Error fetching user, login again...</div>
+        <div className="w-screen h-[calc(90vh)] flex flex-col justify-center items-center text-4xl font-body">
+          Error fetching user, login again...
+        </div>
       ) : (
-        <div>You are not logged in</div>
+        <div className="w-screen h-[calc(90vh)] flex flex-col justify-center items-center text-4xl font-body">
+          You are not logged in
+        </div>
       )}
     </div>
   );
