@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { FaChartPie, FaCog, FaHome, FaUserFriends } from "react-icons/fa";
+import useOrders from "../hooks/orderHook";
+import useUsers from "../hooks/usersHook";
 
 // Define the type for the sections object
 interface Sections {
@@ -12,47 +14,121 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<string>("overview");
 
+  //orders
+  const {
+    data: orders,
+    isLoading: ordersLoading,
+    error: ordersError,
+  } = useOrders();
+  const [paid, setPaid] = useState([]);
+  const [unpaid, setUnpaid] = useState([]);
+
+  //users
+  const {
+    data: users,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useUsers();
+
+  useEffect(() => {
+    if (orders) {
+      setPaid(orders.filter((or) => or.paymentStatus === "paid"));
+      setUnpaid(orders.filter((or) => or.paymentStatus === "pending"));
+    }
+  }, [orders]);
+
   // Sections content mapped to their keys
   const sections: Sections = {
     overview: (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="p-6 bg-input rounded-lg shadow-md">
           <h2 className="font-heading text-lg mb-4">Total Orders</h2>
-          <p className="text-3xl font-bold text-primary">123</p>
+          {orders ? (
+            <p className="text-3xl font-bold text-primary">{orders.length}</p>
+          ) : ordersLoading ? (
+            <p>Loading...</p>
+          ) : ordersError ? (
+            <p className="text-red-500">Error Loading orders</p>
+          ) : (
+            <p>Orders were not fetched</p>
+          )}
         </div>
         <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">Monthly Revenue</h2>
-          <p className="text-3xl font-bold text-green-600">$12,000</p>
+          <h2 className="font-heading text-lg mb-4">Expected Revenue</h2>
+          {orders ? (
+            <p className="text-3xl font-bold text-primary text-green-600">
+              {orders
+                .reduce((total, order) => total + order.totalAmount, 0)
+                .toFixed(2)}
+            </p>
+          ) : ordersLoading ? (
+            <p>Loading...</p>
+          ) : ordersError ? (
+            <p className="text-red-500">Error Loading orders</p>
+          ) : (
+            <p>Orders were not fetched</p>
+          )}
         </div>
         <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">Pending Payments</h2>
-          <p className="text-3xl font-bold text-yellow-500">8</p>
+          <h2 className="font-heading text-lg mb-4">
+            Completed Payments({paid.length})
+          </h2>
+          {paid.length > 0 ? (
+            <p className="text-3xl font-bold text-green-800">
+              {paid
+                .reduce((total, order) => total + order.totalAmount, 0)
+                .toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-3xl font-bold text-green-800">00.00</p>
+          )}
+        </div>
+        <div className="p-6 bg-input rounded-lg shadow-md">
+          <h2 className="font-heading text-lg mb-4">
+            Pending Payments({unpaid.length})
+          </h2>
+          {unpaid.length > 0 ? (
+            <p className="text-3xl font-bold text-yellow-500">
+              {unpaid
+                .reduce((total, order) => total + order.totalAmount, 0)
+                .toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-3xl font-bold text-green-800">00.00</p>
+          )}
         </div>
       </div>
     ),
     users: (
       <div className="bg-input rounded-lg shadow-md p-6">
-        <h2 className="font-heading text-lg mb-4">User Management</h2>
+        <h2 className="font-heading text-lg mb-4 font-bold">User Management</h2>
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b">
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
               <th className="p-3">Role</th>
+              <th className="p-3">Status</th>
             </tr>
           </thead>
-          <tbody>
-            {[
-              { name: "John Doe", email: "john@example.com", role: "Admin" },
-              { name: "Jane Smith", email: "jane@example.com", role: "User" },
-            ].map((user, idx) => (
-              <tr key={idx} className="hover:bg-gray-100">
-                <td className="p-3">{user.name}</td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">{user.role}</td>
-              </tr>
-            ))}
-          </tbody>
+          {users ? (
+            <tbody>
+              {users.map((user, idx) => (
+                <tr key={idx} className="hover:bg-gray-100">
+                  <td className="p-3">{user.name}</td>
+                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user.role}</td>
+                  <td className="p-3">
+                    {user.isActive ? "Online" : "Offline"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <div>
+              <p>Loading users...</p>
+            </div>
+          )}
         </table>
       </div>
     ),
