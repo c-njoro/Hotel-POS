@@ -70,7 +70,7 @@ const getAllOrders = async (req, res) => {
       query.paymentStatus = { $regex: paymentStatus, $options: "i" };
     }
 
-    const orders = await Order.find(query);
+    const orders = await Order.find(query).sort({ dateCreated: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });

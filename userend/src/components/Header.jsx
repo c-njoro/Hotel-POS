@@ -7,6 +7,7 @@ import useSessionHook from "./hooks/sessionHook";
 import useUser from "./hooks/userHook";
 
 const Header = () => {
+  const [bell, setBell] = useState("");
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -28,6 +29,14 @@ const Header = () => {
   } = useMessages(user?._id);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (messages) {
+      const unread = messages.filter((msg) => !msg.opened);
+      console.log("Unread: ", unread);
+      setBell(unread.length > 0 ? "on" : "");
+    }
+  }, [messages]);
 
   const [menuClass, setMenuClass] = useState("hide");
   const toggleMenu = () => {
@@ -73,7 +82,7 @@ const Header = () => {
                 />
               </svg>
             </Link>
-            <Link href="/notifications">
+            <Link href="/notifications" className={`${bell} relative`}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

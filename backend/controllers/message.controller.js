@@ -75,7 +75,7 @@ const getAllMessages = async (req, res) => {
     if (sender) {
       query.sender = sender; // checks if the passed cuisine is in the array
     }
-    const allMessages = await Message.find(query);
+    const allMessages = await Message.find(query).sort({ timestamp: -1 });
     res.status(200).json(allMessages);
   } catch (error) {
     res.status(500).json({ message: "Could not fetch all messages: ", error });

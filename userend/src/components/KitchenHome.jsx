@@ -142,8 +142,20 @@ const KitchenHome = () => {
                   </div>
                   <div className="btn">
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         markOrderAsReady(order._id);
+                        try {
+                          const notifyWaiter = await axios.post(
+                            `${process.env.NEXT_PUBLIC_MESSAGES_URL}/create`,
+                            {
+                              sender: user._id,
+                              receiver: order.waiter.waiterId,
+                              text: `Your order for table: ${order.table} is ready to be served. Pick at the kitchen counter.`,
+                            }
+                          );
+                        } catch (error) {
+                          console.log("Could not notify the waiter: ", error);
+                        }
                       }}
                     >
                       Mark as ready
@@ -186,13 +198,31 @@ const KitchenHome = () => {
                       </h1>
                     )}
                   </div>
-                  <div className="btn">
+                  <div className="btn flex flex-row justify-between w-full">
                     <button
                       onClick={() => {
                         markOrderAsUnReady(order._id);
                       }}
                     >
                       Reverse to unready
+                    </button>
+                    <button
+                      onClick={async () => {
+                        try {
+                          const notifyWaiter = await axios.post(
+                            `${process.env.NEXT_PUBLIC_MESSAGES_URL}/create`,
+                            {
+                              sender: user._id,
+                              receiver: order.waiter.waiterId,
+                              text: `Your order for table: ${order.table} is ready to be served. Pick at the kitchen counter.`,
+                            }
+                          );
+                        } catch (error) {
+                          console.log("Could not notify the waiter: ", error);
+                        }
+                      }}
+                    >
+                      Resend notification
                     </button>
                   </div>
                 </div>

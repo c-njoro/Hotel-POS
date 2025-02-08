@@ -36,7 +36,9 @@ const Notifications = () => {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className="border-l-2 border-blue-400 p-3 rounded-lg shadow-md"
+                className={`border-l-2 border-blue-400 p-3 rounded-lg shadow-md ${
+                  !msg.opened ? "bg-blue-300" : ""
+                }`}
               >
                 <div>
                   <p className="font-body p-1 text-gray-800">{msg.text}</p>
