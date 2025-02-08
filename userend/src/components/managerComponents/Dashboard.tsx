@@ -2,7 +2,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { FaChartPie, FaCog, FaHome, FaUserFriends } from "react-icons/fa";
+import { MdOutlineInventory } from "react-icons/md";
 import useOrders from "../hooks/orderHook";
+import useStock from "../hooks/stockHook";
 import useUsers from "../hooks/usersHook";
 
 // Define the type for the sections object
@@ -22,6 +24,8 @@ const Dashboard: React.FC = () => {
   } = useOrders();
   const [paid, setPaid] = useState([]);
   const [unpaid, setUnpaid] = useState([]);
+  const [preparing, setPreparing] = useState([]);
+  const [ready, setReady] = useState([]);
 
   //users
   const {
@@ -30,10 +34,23 @@ const Dashboard: React.FC = () => {
     error: usersError,
   } = useUsers();
 
+  //stock
+  const {
+    data: stock,
+    isLoading: stockLoading,
+    error: stockError,
+  } = useStock();
+
   useEffect(() => {
     if (orders) {
       setPaid(orders.filter((or) => or.paymentStatus === "paid"));
-      setUnpaid(orders.filter((or) => or.paymentStatus === "pending"));
+      setUnpaid(
+        orders.filter(
+          (or) => or.paymentStatus === "pending" && or.orderStatus === "served"
+        )
+      );
+      setPreparing(orders.filter((or) => or.orderStatus === "preparing"));
+      setReady(orders.filter((or) => or.orderStatus === "ready"));
     }
   }, [orders]);
 
@@ -89,12 +106,41 @@ const Dashboard: React.FC = () => {
           </h2>
           {unpaid.length > 0 ? (
             <p className="text-3xl font-bold text-yellow-500">
+              {" "}
               {unpaid
                 .reduce((total, order) => total + order.totalAmount, 0)
                 .toFixed(2)}
             </p>
           ) : (
-            <p className="text-3xl font-bold text-green-800">00.00</p>
+            <p className="text-3xl font-bold text-yellow-500">00.00</p>
+          )}
+        </div>
+        <div className="p-6 bg-input rounded-lg shadow-md">
+          <h2 className="font-heading text-lg mb-4">
+            Waiting to be served({ready.length})
+          </h2>
+          {ready.length > 0 ? (
+            <p className="text-3xl font-bold text-yellow-900">
+              {ready
+                .reduce((total, order) => total + order.totalAmount, 0)
+                .toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-3xl font-bold text-yellow-900">00.00</p>
+          )}
+        </div>
+        <div className="p-6 bg-input rounded-lg shadow-md">
+          <h2 className="font-heading text-lg mb-4">
+            In Preparation({preparing.length})
+          </h2>
+          {preparing.length > 0 ? (
+            <p className="text-3xl font-bold text-orange-500">
+              {preparing
+                .reduce((total, order) => total + order.totalAmount, 0)
+                .toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-3xl font-bold text-orange-800">00.00</p>
           )}
         </div>
       </div>
@@ -118,7 +164,11 @@ const Dashboard: React.FC = () => {
                   <td className="p-3">{user.name}</td>
                   <td className="p-3">{user.email}</td>
                   <td className="p-3">{user.role}</td>
-                  <td className="p-3">
+                  <td
+                    className={`p-3 ${
+                      user.isActive ? "text-green-700" : "text-red-700"
+                    }`}
+                  >
                     {user.isActive ? "Online" : "Offline"}
                   </td>
                 </tr>
@@ -146,10 +196,57 @@ const Dashboard: React.FC = () => {
         <p>Configure application preferences here.</p>
       </div>
     ),
+    stock: (
+      <div className="bg-input rounded-lg shadow-md p-6">
+        <h2 className="font-heading text-lg mb-4 font-bold">
+          Stock Management
+        </h2>
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b">
+              <th className="p-3">Name</th>
+              <th className="p-3">Quantity</th>
+              <th className="p-3">Unit</th>
+              <th className="p-3">Status</th>
+            </tr>
+          </thead>
+          {stock ? (
+            <tbody>
+              {stock.map((stk, idx) => (
+                <tr key={idx} className="hover:bg-gray-100">
+                  <td className="p-3">{stk.name}</td>
+                  <td className="p-3">{stk.quantity}</td>
+                  <td className="p-3">{stk.unit}</td>
+                  <td
+                    className={`p-3 ${
+                      stk.quantity > stk.threshold
+                        ? "text-green-600"
+                        : stk.quantity === 0
+                        ? "text-red-600"
+                        : "text-orange-600"
+                    }`}
+                  >
+                    {stk.quantity > stk.threshold
+                      ? "Safe"
+                      : stk.quantity === 0
+                      ? "Finished"
+                      : "Below Minimum"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <div>
+              <p>Loading users...</p>
+            </div>
+          )}
+        </table>
+      </div>
+    ),
   };
 
   return (
-    <div className="min-h-screen bg-blue-200  text-foreground font-body">
+    <div className="min-h-[calc(90vh)] bg-blue-200  text-foreground font-body">
       <div className="flex">
         {/* Sidebar */}
         <nav className="w-64 bg-primary  p-4 space-y-4">
@@ -157,8 +254,10 @@ const Dashboard: React.FC = () => {
           <ul className="space-y-4">
             <li
               onClick={() => setActiveSection("overview")}
-              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded ${
-                activeSection === "overview" ? "bg-primary-dark" : ""
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "overview"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
               }`}
             >
               <FaHome className="mr-3" />
@@ -166,17 +265,32 @@ const Dashboard: React.FC = () => {
             </li>
             <li
               onClick={() => setActiveSection("users")}
-              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded ${
-                activeSection === "users" ? "bg-primary-dark" : ""
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "users"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
               }`}
             >
               <FaUserFriends className="mr-3" />
               Users
             </li>
             <li
+              onClick={() => setActiveSection("stock")}
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "stock"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
+              }`}
+            >
+              <MdOutlineInventory className="mr-3" />
+              stock
+            </li>
+            <li
               onClick={() => setActiveSection("analytics")}
-              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded ${
-                activeSection === "analytics" ? "bg-primary-dark" : ""
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "analytics"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
               }`}
             >
               <FaChartPie className="mr-3" />
@@ -184,8 +298,10 @@ const Dashboard: React.FC = () => {
             </li>
             <li
               onClick={() => setActiveSection("settings")}
-              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded ${
-                activeSection === "settings" ? "bg-primary-dark" : ""
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "settings"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
               }`}
             >
               <FaCog className="mr-3" />

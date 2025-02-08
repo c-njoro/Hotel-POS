@@ -65,7 +65,17 @@ const createMessage = async (req, res) => {
 //getting all messages
 const getAllMessages = async (req, res) => {
   try {
-    const allMessages = await Message.find({});
+    const { receiver, sender } = req.query;
+    const query = {};
+
+    if (receiver) {
+      query.receiver = receiver; // checks if the passed cuisine is in the array
+    }
+
+    if (sender) {
+      query.sender = sender; // checks if the passed cuisine is in the array
+    }
+    const allMessages = await Message.find(query);
     res.status(200).json(allMessages);
   } catch (error) {
     res.status(500).json({ message: "Could not fetch all messages: ", error });
