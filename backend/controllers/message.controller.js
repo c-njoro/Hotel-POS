@@ -1,47 +1,6 @@
 const Message = require("../models/message.model");
 const io = require("../index");
 
-//creating a message
-const sendMessage = async (req, res) => {
-  try {
-    const newMessage = await Message.create(req.body);
-
-    //emit the message to every user in connection
-    io.emit("receiveMessage", newMessage);
-
-    res.status(201).json(newMessage);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Could not create new message : " + error.message });
-  }
-};
-
-//retrieving messages WITH PARAMETERS
-const getMessages = async (req, res) => {
-  const { sender, receiver } = req.params;
-
-  if (!sender || !receiver) {
-    return res
-      .status(400)
-      .json({ message: "Either receiver or sender is missing in the request" });
-  }
-
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender, receiver },
-        { sender: receiver, receiver: sender },
-      ],
-    });
-    res.status(200).json(messages);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Could not fetch messages : " + error.message });
-  }
-};
-
 // Create a new message and emit it to the receiver
 const createMessage = async (req, res) => {
   try {
@@ -82,9 +41,29 @@ const getAllMessages = async (req, res) => {
   }
 };
 
+//update a message
+const markOpened = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      res.status(405).json({ message: "Id was not provided" });
+    }
+    const openedMessage = await Message.findByIdAndUpdate(id, { opened: true });
+    if (!openedMessage) {
+      res.status(404).json({ message: "Message could not be found" });
+    }
+
+    res.status(200).json({ message: "message marked as opened" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Could not mark message as opened", error });
+  }
+};
+
 module.exports = {
-  sendMessage,
-  getMessages,
   createMessage,
   getAllMessages,
+  markOpened,
 };

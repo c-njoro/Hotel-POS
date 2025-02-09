@@ -11,11 +11,11 @@
 }
 .on::after {
   content: "";
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: green;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -3px;
+  right: -2px;
 }

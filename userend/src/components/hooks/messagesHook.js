@@ -5,7 +5,9 @@ const fetchMessages = async (userId) => {
   const response = await axios.get(
     `${process.env.NEXT_PUBLIC_MESSAGES_URL}?receiver=${userId}`
   );
+
   const messages = response.data;
+
   return messages;
 };
 

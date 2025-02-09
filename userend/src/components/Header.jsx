@@ -1,3 +1,4 @@
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -29,14 +30,27 @@ const Header = () => {
   } = useMessages(user?._id);
 
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState("");
+  const [prevPage, setPrevPage] = useState("");
 
   useEffect(() => {
     if (messages) {
       const unread = messages.filter((msg) => !msg.opened);
-      console.log("Unread: ", unread);
+
       setBell(unread.length > 0 ? "on" : "");
+
+      if (unread.length > 0) {
+        playNotificationSound();
+      }
     }
   }, [messages]);
+
+  const playNotificationSound = () => {
+    const audio = new Audio("/images/notificationsound2.mp3"); // Replace with your audio file path
+    audio.play().catch((err) => {
+      console.error("Error playing notification sound: ", err);
+    });
+  };
 
   const [menuClass, setMenuClass] = useState("hide");
   const toggleMenu = () => {
@@ -50,7 +64,31 @@ const Header = () => {
   useEffect(() => {
     // Set menu to hide on route change
     setMenuClass("hide");
+    setPrevPage(currentPage);
+    setCurrentPage(router.pathname);
   }, [router.asPath]);
+
+  useEffect(() => {
+    console.log("Current:", currentPage, "  Prev:, ", prevPage);
+    if (prevPage === "/notifications") {
+      const unread = messages.filter((msg) => !msg.opened);
+      if (unread.length > 0) {
+        try {
+          unread.forEach((msg) => {
+            axios
+              .put(
+                `${process.env.NEXT_PUBLIC_MESSAGES_URL}/markOpened/${msg._id}`
+              )
+              .catch((error) =>
+                console.log("Could not mark message as opened:", error)
+              );
+          });
+        } catch (error) {
+          console.log("Error while reading all messages; ", error);
+        }
+      }
+    }
+  }, [currentPage, prevPage]);
 
   return (
     <div className="bg-blue-300 w-screen h-max flex flex-col text-black relative">
