@@ -8,7 +8,12 @@ import useSessionHook from "./hooks/sessionHook";
 import useUser from "./hooks/userHook";
 
 const Header = () => {
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState("");
+  const [prevPage, setPrevPage] = useState("");
+  const [menuClass, setMenuClass] = useState("hide");
   const [bell, setBell] = useState("");
+
   const {
     data: sessionData,
     isLoading: sessionLoading,
@@ -29,10 +34,6 @@ const Header = () => {
     refetch: refetchMessages,
   } = useMessages(user?._id);
 
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState("");
-  const [prevPage, setPrevPage] = useState("");
-
   useEffect(() => {
     if (messages) {
       const unread = messages.filter((msg) => !msg.opened);
@@ -45,6 +46,7 @@ const Header = () => {
     }
   }, [messages]);
 
+  //play a notification mp3 sound
   const playNotificationSound = () => {
     const audio = new Audio("/images/notificationsound2.mp3"); // Replace with your audio file path
     audio.play().catch((err) => {
@@ -52,7 +54,6 @@ const Header = () => {
     });
   };
 
-  const [menuClass, setMenuClass] = useState("hide");
   const toggleMenu = () => {
     if (menuClass === "hide") {
       setMenuClass("menu-show");
@@ -61,15 +62,15 @@ const Header = () => {
     }
   };
 
+  //hide the drop menu bar as the pages change and set previous page and current page to their respective changes
   useEffect(() => {
-    // Set menu to hide on route change
     setMenuClass("hide");
     setPrevPage(currentPage);
     setCurrentPage(router.pathname);
   }, [router.asPath]);
 
+  //mark all messages as read once user visits the notifications page and then leaves
   useEffect(() => {
-    console.log("Current:", currentPage, "  Prev:, ", prevPage);
     if (prevPage === "/notifications") {
       const unread = messages.filter((msg) => !msg.opened);
       if (unread.length > 0) {

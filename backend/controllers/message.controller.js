@@ -47,18 +47,42 @@ const markOpened = async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-      res.status(405).json({ message: "Id was not provided" });
+      return res.status(405).json({ message: "Id was not provided" });
     }
     const openedMessage = await Message.findByIdAndUpdate(id, { opened: true });
     if (!openedMessage) {
-      res.status(404).json({ message: "Message could not be found" });
+      return res.status(404).json({ message: "Message could not be found" });
     }
 
-    res.status(200).json({ message: "message marked as opened" });
+    return res.status(200).json({ message: "message marked as opened" });
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Could not mark message as opened", error });
+  }
+};
+
+//delete a message
+const deleteMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(405).json({ message: "Message id was not provided" });
+    }
+
+    const deletedMessage = await Message.findByIdAndDelete(id);
+
+    if (!deletedMessage) {
+      return res
+        .status(404)
+        .json({ message: "Message not found, maybe already deleted" });
+    }
+
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Could not delete message due to: ${error}` });
   }
 };
 
@@ -66,4 +90,5 @@ module.exports = {
   createMessage,
   getAllMessages,
   markOpened,
+  deleteMessage,
 };
