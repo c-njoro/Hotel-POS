@@ -13,11 +13,11 @@ LOCAL_KEY=your mongodb local URI
 
 Authentications
 
-NEXTAUTH_URL=http://localhost:3000(the port the frontend is running on)
+NEXTAUTH_URL=http://localhost:3000  (the port the frontend is running on)
 
 NEXTAUTH_SECRET=(generate a random key)
 
-NEXT_PUBLIC_BASE_URL=http://localhost:5000(the endpoint where the backend is running)
+NEXT_PUBLIC_BASE_URL=http://localhost:5000  (the endpoint where the backend is running)
 
 
 NEXT_PUBLIC_DISHES_URL=${NEXT_PUBLIC_BASE_URL}/api/dishes
