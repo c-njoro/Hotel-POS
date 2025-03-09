@@ -3,6 +3,18 @@ import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { FaChartPie, FaCog, FaHome, FaUserFriends } from "react-icons/fa";
 import { MdOutlineInventory } from "react-icons/md";
+import {
+  Bar,
+  BarChart,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import useOrders from "../hooks/orderHook";
 import useStock from "../hooks/stockHook";
 import useUsers from "../hooks/usersHook";
@@ -26,6 +38,40 @@ const Dashboard: React.FC = () => {
   const [unpaid, setUnpaid] = useState([]);
   const [preparing, setPreparing] = useState([]);
   const [ready, setReady] = useState([]);
+  const revenueData = [
+    { month: "Jan", revenue: 4000 },
+    { month: "Feb", revenue: 3000 },
+    { month: "Mar", revenue: 5000 },
+    { month: "Apr", revenue: 7000 },
+    { month: "May", revenue: 6000 },
+    { month: "Jun", revenue: 8000 },
+  ];
+
+  const orderStatusData = [
+    { status: "Completed", count: paid.length },
+    {
+      status: "Pending",
+      count: preparing.length + unpaid.length + ready.length,
+    },
+    { status: "Cancelled", count: 10 },
+  ];
+
+  const userActivityData = [
+    { day: "Monday", activeUsers: 8 },
+    { day: "Tuesday", activeUsers: 9 },
+    { day: "Wednesday", activeUsers: 10 },
+    { day: "Thursday", activeUsers: 7 },
+    { day: "Friday", activeUsers: 13 },
+    { day: "Saturday", activeUsers: 8 },
+    { day: "Sunday", activeUsers: 9 },
+  ];
+
+  const salesData = [
+    { week: "Week 1", sales: 5000 },
+    { week: "Week 2", sales: 7000 },
+    { week: "Week 3", sales: 8000 },
+    { week: "Week 4", sales: 6000 },
+  ];
 
   //users
   const {
@@ -56,6 +102,63 @@ const Dashboard: React.FC = () => {
 
   // Sections content mapped to their keys
   const sections: Sections = {
+    analytics: (
+      <div className="p-6 bg-input rounded-lg shadow-md">
+        <h2 className="font-heading text-lg mb-4">Analytics Dashboard</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Revenue Trends */}
+          <div className="bg-header p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-8">Revenue Trends</h3>
+            <LineChart width={400} height={200} data={revenueData}>
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
+            </LineChart>
+          </div>
+
+          {/* Order Status Breakdown */}
+          <div className="bg-header p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-8">Order Status</h3>
+            <PieChart width={300} height={200}>
+              <Pie
+                data={orderStatusData}
+                dataKey="count"
+                nameKey="status"
+                outerRadius={80}
+                fill="#8884d8"
+              />
+              <Tooltip />
+            </PieChart>
+          </div>
+
+          {/* User Activity Trends */}
+          <div className="bg-header p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-8">User Activity Trends</h3>
+            <BarChart width={400} height={200} data={userActivityData}>
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="activeUsers" fill="#3498db" />
+            </BarChart>
+          </div>
+        </div>
+
+        {/* Sales Performance */}
+        <div className="bg-header p-4 rounded-lg shadow mt-6">
+          <h3 className="text-lg font-semibold mb-8">Sales Performance</h3>
+          <LineChart width={400} height={200} data={salesData}>
+            <XAxis dataKey="week" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="sales" stroke="#ff7300" />
+          </LineChart>
+        </div>
+      </div>
+    ),
     overview: (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="p-6 bg-input rounded-lg shadow-md">
@@ -182,14 +285,7 @@ const Dashboard: React.FC = () => {
         </table>
       </div>
     ),
-    analytics: (
-      <div className="p-6 bg-input rounded-lg shadow-md">
-        <h2 className="font-heading text-lg mb-4">Analytics</h2>
-        <div className="h-64 bg-header flex items-center justify-center rounded-lg">
-          <p>Chart Placeholder</p>
-        </div>
-      </div>
-    ),
+
     settings: (
       <div className="p-6 bg-input rounded-lg shadow-md">
         <h2 className="font-heading text-lg mb-4">Settings</h2>
@@ -253,6 +349,18 @@ const Dashboard: React.FC = () => {
           <h1 className="font-heading text-2xl mb-6">Admin Panel</h1>
           <ul className="space-y-4">
             <li
+              onClick={() => setActiveSection("analytics")}
+              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
+                activeSection === "analytics"
+                  ? "bg-blue-100 border-l-2 border-green-500"
+                  : ""
+              }`}
+            >
+              <FaChartPie className="mr-3" />
+              Analytics
+            </li>
+
+            <li
               onClick={() => setActiveSection("overview")}
               className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
                 activeSection === "overview"
@@ -285,17 +393,7 @@ const Dashboard: React.FC = () => {
               <MdOutlineInventory className="mr-3" />
               stock
             </li>
-            <li
-              onClick={() => setActiveSection("analytics")}
-              className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
-                activeSection === "analytics"
-                  ? "bg-blue-100 border-l-2 border-green-500"
-                  : ""
-              }`}
-            >
-              <FaChartPie className="mr-3" />
-              Analytics
-            </li>
+
             <li
               onClick={() => setActiveSection("settings")}
               className={`flex items-center p-3 cursor-pointer hover:bg-primary-dark rounded hover:font-bold ${
