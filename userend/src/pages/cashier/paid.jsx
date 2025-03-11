@@ -1,4 +1,3 @@
-import useOrders from "@/components/hooks/orderHook";
 import useSessionHook from "@/components/hooks/sessionHook";
 import useUser from "@/components/hooks/userHook";
 import axios from "axios";
@@ -6,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import useOrders from "../../components/hooks/orderHook";
 
 const CashierPaid = () => {
   const {

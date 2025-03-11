@@ -49,9 +49,11 @@ const Dashboard: React.FC = () => {
 
   const orderStatusData = [
     { status: "Completed", count: paid.length },
+    { status: "Waiting Payment", count: unpaid.length },
+    { status: "Ready & Unserved", count: ready.length },
     {
-      status: "Pending",
-      count: preparing.length + unpaid.length + ready.length,
+      status: "Preparing",
+      count: preparing.length,
     },
     { status: "Cancelled", count: 2 },
   ];

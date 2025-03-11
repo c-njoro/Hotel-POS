@@ -1,13 +1,13 @@
 "use client";
 
-import useOrders from "@/components/hooks/orderHook";
-import useSessionHook from "@/components/hooks/sessionHook";
-import useUser from "@/components/hooks/userHook";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { AiFillPrinter } from "react-icons/ai";
 import { BsCashStack } from "react-icons/bs";
 import { FaCcVisa } from "react-icons/fa";
+import useOrders from "../../../components/hooks/orderHook";
+import useSessionHook from "../../../components/hooks/sessionHook";
+import useUser from "../../../components/hooks/userHook";
 
 const PrintOrder = ({ currentOrder }) => {
   const {
