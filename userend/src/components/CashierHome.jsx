@@ -1,4 +1,3 @@
-import axios from "axios";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AiFillPrinter } from "react-icons/ai";
@@ -83,22 +82,6 @@ const CashierHome = () => {
     setFilteredUnPaidOrders(searches);
   };
 
-  //mark orders as paid or unpaid
-  const markOrderAsPaid = async (id) => {
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_ORDERS_URL}/update/${id}`,
-        {
-          paymentStatus: "paid",
-        }
-      );
-
-      refetchOrders();
-    } catch (error) {
-      console.log("Could not mark as paid due to : ", error);
-    }
-  };
-
   return (
     <div className="main-cashier-orders-container">
       <div className="heading">
@@ -150,29 +133,15 @@ const CashierHome = () => {
                     )}
                   </div>
                   <div className="totals">
-                    <button
-                      onClick={() => {
-                        const isConfirmed = window.confirm(
-                          `Confirm table ${order.table} has completed payment of Ksh.${order.totalAmount}`
-                        );
-
-                        if (!isConfirmed) {
-                          return;
-                        }
-                        markOrderAsPaid(order._id);
-                      }}
-                    >
-                      Mark Order As Paid
-                    </button>
-                    <p>Total : {order.totalAmount}</p>
                     <button>
                       <Link
                         href={`/cashier/${order._id}`}
                         className="flex flex-row gap-5"
                       >
-                        <AiFillPrinter /> Print Bill
+                        <AiFillPrinter /> Bill & Payment
                       </Link>
                     </button>
+                    <p>Total : {order.totalAmount}</p>
                   </div>
                 </div>
               ))

@@ -26,7 +26,7 @@ interface Sections {
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState<string>("overview");
+  const [activeSection, setActiveSection] = useState<string>("analytics");
 
   //orders
   const {
@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
       status: "Pending",
       count: preparing.length + unpaid.length + ready.length,
     },
-    { status: "Cancelled", count: 10 },
+    { status: "Cancelled", count: 2 },
   ];
 
   const userActivityData = [
