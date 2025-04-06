@@ -1,5 +1,7 @@
-// ProductShow.js
+// UserShow.js
 import {
+  ArrayField,
+  Datagrid,
   DateField,
   EmailField,
   Show,
@@ -18,6 +20,14 @@ const UserShow = (props) => (
       <TextField source="isActive" />
       <DateField source="dateCreated" label="Join Date" />
       <TextField source="__v" label="Appearances" />
+
+      {/* Shifts Table */}
+      <ArrayField source="shifts">
+        <Datagrid bulkActionButtons={false}>
+          <TextField source="day" label="Shift Day" />
+          <TextField source="time" label="Shift Time" />
+        </Datagrid>
+      </ArrayField>
     </SimpleShowLayout>
   </Show>
 );

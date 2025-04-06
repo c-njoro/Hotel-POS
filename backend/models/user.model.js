@@ -2,6 +2,29 @@ const mongoose = require("mongoose");
 const { type } = require("express/lib/response");
 const Order = require("../models/order.model");
 
+const shiftSchema = new mongoose.Schema(
+  {
+    day: {
+      type: String,
+      required: true,
+      enum: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+    },
+    time: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,6 +48,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  shifts: [shiftSchema],
   isActive: {
     type: Boolean,
     default: true,

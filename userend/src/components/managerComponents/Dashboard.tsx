@@ -26,7 +26,7 @@ interface Sections {
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState<string>("analytics");
+  const [activeSection, setActiveSection] = useState<string>("users");
 
   //orders
   const {
@@ -260,6 +260,7 @@ const Dashboard: React.FC = () => {
               <th className="p-3">Email</th>
               <th className="p-3">Role</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Track More</th>
             </tr>
           </thead>
           {users ? (
@@ -275,6 +276,14 @@ const Dashboard: React.FC = () => {
                     }`}
                   >
                     {user.isActive ? "Online" : "Offline"}
+                  </td>
+                  <td className="p-3">
+                    <Link
+                      href={`/manager/${user._id}`}
+                      className="text-orange-500"
+                    >
+                      Performance
+                    </Link>
                   </td>
                 </tr>
               ))}
