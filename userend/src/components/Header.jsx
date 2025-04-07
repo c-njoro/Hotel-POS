@@ -176,8 +176,8 @@ const Header = () => {
                 <Link href="/waiter/order" className="the-link">
                   Make an order
                 </Link>
-                <Link href="/changePassword" className="the-link">
-                  Change Password
+                <Link href="/profile" className="the-link">
+                  Profile
                 </Link>
 
                 <Link
@@ -195,8 +195,8 @@ const Header = () => {
                 <Link href="/kitchen/dishesManagement" className="the-link">
                   Manage Dishes
                 </Link>
-                <Link href="/changePassword" className="the-link">
-                  Change Password
+                <Link href="/profile" className="the-link">
+                  Profile
                 </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
@@ -207,8 +207,8 @@ const Header = () => {
               </div>
             ) : user.role == "manager" ? (
               <div className="link-holder">
-                <Link href="/changePassword" className="the-link">
-                  Change Password
+                <Link href="/profile" className="the-link">
+                  Profile
                 </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
@@ -219,8 +219,8 @@ const Header = () => {
               </div>
             ) : user.role == "cashier" ? (
               <div className="link-holder">
-                <Link href="/changePassword" className="the-link">
-                  Change Password
+                <Link href="/profile" className="the-link">
+                  Profile
                 </Link>
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
