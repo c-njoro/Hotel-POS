@@ -1,3 +1,6 @@
+import useOrders from "@/components/hooks/orderHook";
+import PieChartComponent from "@/components/PieChartComponent";
+import StatCard from "@/components/StatCard";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -6,6 +9,81 @@ import { MdNightlight } from "react-icons/md";
 
 const UserTracking = ({ currentUser }) => {
   const [day, setDay] = useState("");
+
+  //kitchen data
+  const [prepared, setPrepared] = useState([]);
+  const [unPrepared, setUnPrepared] = useState([]);
+
+  //waiters data
+  const [myOrders, setMyOrders] = useState([]);
+  const [served, setServed] = useState([]);
+  const [unServed, setUnServed] = useState([]);
+
+  //cashiers data
+  const [paid, setPaid] = useState([]);
+  const [unPaid, setUnPaid] = useState([]);
+
+  const {
+    data: orders,
+    isLoading: ordersLoading,
+    error: ordersError,
+    refetch: refetchOrders,
+  } = useOrders();
+
+  useEffect(() => {
+    if (currentUser.role == "waiter") {
+      if (orders && orders.length > 0) {
+        const userOrders = orders.filter(
+          (order) => order.waiter.waiterId === currentUser._id
+        );
+        setMyOrders(userOrders);
+
+        const servedOrders = userOrders.filter(
+          (order) => order.orderStatus === "served"
+        );
+        setServed(servedOrders);
+
+        const unServedOrders = userOrders.filter(
+          (order) => order.orderStatus !== "served"
+        );
+        setUnServed(unServedOrders);
+      }
+
+      return;
+    }
+
+    if (currentUser.role == "kitchen") {
+      if (orders && orders.length > 0) {
+        // Filter orders for the kitchen
+        const readyOrders = orders.filter(
+          (order) => order.orderStatus !== "preparing"
+        );
+        setPrepared(readyOrders);
+
+        const unOrders = orders.filter(
+          (order) => order.orderStatus == "preparing"
+        );
+        setUnPrepared(unOrders);
+      }
+      return;
+    }
+
+    if (currentUser.role == "cashier") {
+      if (orders && orders.length > 0) {
+        // Filter orders for the cashier
+        const paidOrders = orders.filter(
+          (order) => order.paymentStatus === "paid"
+        );
+        setPaid(paidOrders);
+
+        const unPaidOrders = orders.filter(
+          (order) => order.paymentStatus === "pending"
+        );
+        setUnPaid(unPaidOrders);
+      }
+      return;
+    }
+  }, [orders]);
 
   useEffect(() => {
     const now = new Date();
@@ -66,7 +144,7 @@ const UserTracking = ({ currentUser }) => {
       <main className="min-h-full w-full flex flex-col justify-start items-start p-5">
         <div className="shifts w-full flex flex-col justify-start items-start p-3 shadow-lg rounded-lg gap-8">
           <h1 className="text-xl font-bold font-heading tracking-widest text-gray-800">
-            User Shifts
+            {currentUser.name}'s Shift Schedule
           </h1>
           <div className="w-full h-max flex flex-row justify-between items-center">
             {currentUser.shifts.length < 1 ? (
@@ -77,7 +155,7 @@ const UserTracking = ({ currentUser }) => {
                   <div
                     className={`shift flex flex-col justify-start items-start gap-2 w-max min-w-40 ${
                       day.toLowerCase() === shift.day.toLowerCase()
-                        ? "bg-blue-100 border-l-4 border-blue-500 p-3"
+                        ? "bg-blue-300 border-l-4 border-blue-500 p-3"
                         : "bg-white border-l-4 border-gray-300 p-3"
                     }`}
                     key={index}
@@ -112,6 +190,76 @@ const UserTracking = ({ currentUser }) => {
             </div>
           ) : (
             ""
+          )}
+        </div>
+        <div className="user-performance w-full h-max flex flex-col justify-start items-start p-5">
+          {currentUser.role === "kitchen" && (
+            <div className="w-full h-max flex flex-row justify-around items-start gap-4">
+              <div className="w-1/2">
+                <PieChartComponent
+                  title="Order Preparation Status"
+                  data={[
+                    { name: "Prepared", value: prepared.length },
+                    { name: "Preparing", value: unPrepared.length },
+                  ]}
+                />
+              </div>
+
+              <div className="w-1/2 flex flex-col justify-start items-start gap-4">
+                <StatCard
+                  title="Total Orders"
+                  value={prepared.length + unPrepared.length}
+                />
+                <StatCard title="Prepared" value={prepared.length} />
+                <StatCard title="Preparing" value={unPrepared.length} />
+              </div>
+            </div>
+          )}
+
+          {currentUser.role === "waiter" && (
+            <div className="w-full h-max flex flex-row justify-around items-start gap-4">
+              <div className="w-1/2">
+                <PieChartComponent
+                  title="Order Serving Status"
+                  data={[
+                    { name: "Served", value: served.length },
+                    { name: "Unserved", value: unServed.length },
+                  ]}
+                />
+              </div>
+
+              <div className="w-1/2 flex flex-col justify-start items-start gap-4">
+                <StatCard
+                  title={`${currentUser.name} Orders`}
+                  value={myOrders.length}
+                />
+                <StatCard title="Served" value={served.length} />
+                <StatCard title="Unserved" value={unServed.length} />
+              </div>
+            </div>
+          )}
+
+          {currentUser.role === "cashier" && (
+            <div className="w-full h-max flex flex-row justify-around items-start gap-4">
+              <div className="w-1/2">
+                <PieChartComponent
+                  title="Payment Status"
+                  data={[
+                    { name: "Paid", value: paid.length },
+                    { name: "Pending", value: unPaid.length },
+                  ]}
+                />
+              </div>
+
+              <div className="w-1/2 flex flex-col justify-start items-start gap-4">
+                <StatCard
+                  title="Total Orders"
+                  value={paid.length + unPaid.length}
+                />
+                <StatCard title="Paid" value={paid.length} />
+                <StatCard title="Unpaid" value={unPaid.length} />
+              </div>
+            </div>
           )}
         </div>
       </main>

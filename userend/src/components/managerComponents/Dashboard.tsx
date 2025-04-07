@@ -19,6 +19,14 @@ import useOrders from "../hooks/orderHook";
 import useStock from "../hooks/stockHook";
 import useUsers from "../hooks/usersHook";
 
+import {
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Loader,
+  ShoppingCart,
+} from "lucide-react";
+
 // Define the type for the sections object
 interface Sections {
   [key: string]: ReactNode;
@@ -33,6 +41,7 @@ const Dashboard: React.FC = () => {
     data: orders,
     isLoading: ordersLoading,
     error: ordersError,
+    refetch: refetchOrders, // Refetch function to refresh orders data
   } = useOrders();
   const [paid, setPaid] = useState([]);
   const [unpaid, setUnpaid] = useState([]);
@@ -162,91 +171,108 @@ const Dashboard: React.FC = () => {
       </div>
     ),
     overview: (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">Total Orders</h2>
-          {orders ? (
-            <p className="text-3xl font-bold text-primary">{orders.length}</p>
-          ) : ordersLoading ? (
-            <p>Loading...</p>
-          ) : ordersError ? (
-            <p className="text-red-500">Error Loading orders</p>
-          ) : (
-            <p>Orders were not fetched</p>
-          )}
+      <div className="">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-heading">Overview</h1>
+          {/* <Button variant="outline" onClick={refetchOrders}>
+    <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+  </Button> */}
         </div>
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">Expected Revenue</h2>
-          {orders ? (
-            <p className="text-3xl font-bold text-primary text-green-600">
-              {orders
-                .reduce((total, order) => total + order.totalAmount, 0)
-                .toFixed(2)}
-            </p>
-          ) : ordersLoading ? (
-            <p>Loading...</p>
-          ) : ordersError ? (
-            <p className="text-red-500">Error Loading orders</p>
-          ) : (
-            <p>Orders were not fetched</p>
-          )}
-        </div>
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">
-            Completed Payments({paid.length})
-          </h2>
-          {paid.length > 0 ? (
-            <p className="text-3xl font-bold text-green-800">
-              {paid
-                .reduce((total, order) => total + order.totalAmount, 0)
-                .toFixed(2)}
-            </p>
-          ) : (
-            <p className="text-3xl font-bold text-green-800">00.00</p>
-          )}
-        </div>
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">
-            Pending Payments({unpaid.length})
-          </h2>
-          {unpaid.length > 0 ? (
-            <p className="text-3xl font-bold text-yellow-500">
-              {" "}
-              {unpaid
-                .reduce((total, order) => total + order.totalAmount, 0)
-                .toFixed(2)}
-            </p>
-          ) : (
-            <p className="text-3xl font-bold text-yellow-500">00.00</p>
-          )}
-        </div>
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">
-            Waiting to be served({ready.length})
-          </h2>
-          {ready.length > 0 ? (
-            <p className="text-3xl font-bold text-yellow-900">
-              {ready
-                .reduce((total, order) => total + order.totalAmount, 0)
-                .toFixed(2)}
-            </p>
-          ) : (
-            <p className="text-3xl font-bold text-yellow-900">00.00</p>
-          )}
-        </div>
-        <div className="p-6 bg-input rounded-lg shadow-md">
-          <h2 className="font-heading text-lg mb-4">
-            In Preparation({preparing.length})
-          </h2>
-          {preparing.length > 0 ? (
-            <p className="text-3xl font-bold text-orange-500">
-              {preparing
-                .reduce((total, order) => total + order.totalAmount, 0)
-                .toFixed(2)}
-            </p>
-          ) : (
-            <p className="text-3xl font-bold text-orange-800">00.00</p>
-          )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Total Orders */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <ShoppingCart className="text-primary w-10 h-10" />
+            <div>
+              <h2 className="font-heading text-lg">Total Orders</h2>
+              <p className="text-3xl font-bold text-primary">
+                {orders ? orders.length : "Loading..."}
+              </p>
+            </div>
+          </div>
+
+          {/* Expected Revenue */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <DollarSign className="text-green-600 w-10 h-10" />
+            <div>
+              <h2 className="font-heading text-lg">Expected Revenue</h2>
+              <p className="text-3xl font-bold text-green-600">
+                {orders
+                  ? orders
+                      .reduce((total, order) => total + order.totalAmount, 0)
+                      .toFixed(2)
+                  : "Loading..."}
+              </p>
+            </div>
+          </div>
+
+          {/* Completed Payments */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <CheckCircle className="text-green-800 w-10 h-10" />
+            <div>
+              <h2 className="font-heading text-lg">
+                Completed Payments ({paid.length})
+              </h2>
+              <p className="text-3xl font-bold text-green-800">
+                {paid.length > 0
+                  ? paid
+                      .reduce((total, order) => total + order.totalAmount, 0)
+                      .toFixed(2)
+                  : "00.00"}
+              </p>
+            </div>
+          </div>
+
+          {/* Pending Payments */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <Clock className="text-yellow-500 w-10 h-10" />
+            <div>
+              <h2 className="font-heading text-lg">
+                Pending Payments ({unpaid.length})
+              </h2>
+              <p className="text-3xl font-bold text-yellow-500">
+                {unpaid.length > 0
+                  ? unpaid
+                      .reduce((total, order) => total + order.totalAmount, 0)
+                      .toFixed(2)
+                  : "00.00"}
+              </p>
+            </div>
+          </div>
+
+          {/* Waiting to Be Served */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <Loader className="text-yellow-900 w-10 h-10 animate-spin" />
+            <div>
+              <h2 className="font-heading text-lg">
+                Waiting to Be Served ({ready.length})
+              </h2>
+              <p className="text-3xl font-bold text-yellow-900">
+                {ready.length > 0
+                  ? ready
+                      .reduce((total, order) => total + order.totalAmount, 0)
+                      .toFixed(2)
+                  : "00.00"}
+              </p>
+            </div>
+          </div>
+
+          {/* In Preparation */}
+          <div className="p-6 bg-input rounded-lg shadow-md flex gap-8 items-center">
+            <Loader className="text-orange-500 w-10 h-10 animate-pulse" />
+            <div>
+              <h2 className="font-heading text-lg">
+                In Preparation ({preparing.length})
+              </h2>
+              <p className="text-3xl font-bold text-orange-500">
+                {preparing.length > 0
+                  ? preparing
+                      .reduce((total, order) => total + order.totalAmount, 0)
+                      .toFixed(2)
+                  : "00.00"}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     ),
