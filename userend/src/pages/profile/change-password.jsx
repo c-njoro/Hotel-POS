@@ -48,6 +48,28 @@ const ChangePassword = () => {
       return;
     }
 
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+    if (!passwordRegex.test(inputForm.newPassword)) {
+      console.log(
+        "Password must include lowercase, uppercase, number, and special character"
+      );
+      toast.error(
+        "Password must include lowercase, uppercase, number, and special character",
+        {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        }
+      );
+      return;
+    }
     try {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_USERS_URL}/changePassword`,

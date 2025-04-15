@@ -48,7 +48,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="w-screen h-[calc(90vh)] flex flex-col justify-start items-start p-5 gap-8 bg-blue-200">
+    <div className="w-screen min-h-[calc(90vh)] flex flex-col justify-start items-start p-5 gap-8 bg-blue-200">
       <div>
         <h1 className="text-3xl text-gray-600 font-body font-semibold tracking-widest">
           {user.name}

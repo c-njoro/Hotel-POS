@@ -266,9 +266,11 @@ const Order = () => {
 
   const increaseDishOrder = (id) => {
     setDishesList((previousState) => [...previousState, id]);
+    setSentDishes([]);
   };
 
   const reduceDishInOrder = (id) => {
+    setSentDishes([]);
     const count = dishesList.filter((iD) => iD === id).length;
     if (count <= 1) {
       toast.warn("Only one remaining!!", {
@@ -300,6 +302,7 @@ const Order = () => {
   };
 
   const removeDishFromOrder = (id) => {
+    setSentDishes([]);
     setDishesList((previousState) => {
       return previousState.filter((iD) => iD !== id);
     });
